@@ -3,25 +3,23 @@ Example of accessing the notes slides of a presentation.
 Requires python-pptx 0.5.6 or later.
 ryan@ryanday.net
 """
-from ..slide import BaseSlide, Slide, _SlidePlaceholders
-from .util import lazyproperty
-from ..shapes.shapetree import SlideShapeTree as _SlideShapeTree
-from ..opc.constants import RELATIONSHIP_TYPE as RT
-from ..enum.shapes import PP_PLACEHOLDER_TYPE
-from ..oxml.xmlchemy import BaseOxmlElement, OneAndOnlyOne, ZeroOrOne
-from ..oxml import parse_xml
-from ..oxml.ns import nsdecls
-from ..opc.constants import CONTENT_TYPE as CT
-from ..oxml import register_element_cls
 from .. import content_type_to_part_class_map
+
+from ..enum.shapes import PP_PLACEHOLDER_TYPE
+from ..shapes.shapetree import SlideShapeTree as _SlideShapeTree
+from ..opc.constants import CONTENT_TYPE as CT, RELATIONSHIP_TYPE as RT
 from ..opc.package import PartFactory
+from ..oxml import parse_xml, register_element_cls
+from ..oxml.ns import nsdecls
+from ..oxml.xmlchemy import BaseOxmlElement, OneAndOnlyOne, ZeroOrOne
+from ..util import lazyproperty
+
+from .slide import BaseSlide, Slide, _SlidePlaceholders
 
 
 """
 http://msdn.microsoft.com/en-us/library/office/gg278319%28v=office.15%29.aspx
 """
-
-
 class CT_NotesSlide(BaseOxmlElement):
     """
     ``<p:notes>`` element, root of a notesSlide part
@@ -181,5 +179,7 @@ PartFactory.part_type_for.update(content_type_to_part_class_map)
 
 """
 slide = self.presentation.slides[1]
-notes_slide = SlideWrapper(slide).notes_page()
+notes_slide = SlideWrapper(slide).notes
+for r in notes_slide.get_slide_runs():
+    print(r.text)
 """
